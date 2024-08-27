@@ -13,6 +13,11 @@ import { getAudioMetadata } from "@missingcore/audio-metadata";
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
+const isSupportedFile = (fileUri: string): boolean => {
+  const supportedExtensions = [".flac", ".mp3", ".m4a"]; // Add more as needed
+  return supportedExtensions.some((ext) => fileUri.endsWith(ext));
+};
+
 export const PlayerProvider = ({ children }: ContextProviderType) => {
   const [isLoading, setIsLoading] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -36,6 +41,11 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
         media.assets.map(async (asset) => {
           try {
             const fileUri = asset.uri;
+
+            if (!isSupportedFile(fileUri)) {
+              return undefined;
+            }
+
             const wantedTags = [
               "album",
               "albumArtist",
