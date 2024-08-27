@@ -31,7 +31,8 @@
       "notificationChannel": "playback",
       "permissions": [
         "WAKE_LOCK"
-      ]
+      ],
+      "package": "com.kingrashy.lyricaplayer"
     },
     "web": {
       "bundler": "metro",

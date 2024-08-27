@@ -13,14 +13,20 @@ import {
 } from "react-native";
 import { Track } from "react-native-track-player";
 
-const TrackItem = ({ track }: { track: Track }) => {
+type TrackItemProps = {
+  track: Track;
+  play: (index: number) => void;
+  index: number;
+};
+
+const TrackItem = ({ track, play, index }: TrackItemProps) => {
   const isActiveTrack = false;
   const truncateTitle =
     track.title && track?.title.length > 22
       ? track?.title.slice(0, 22) + "..."
       : track.title;
   return (
-    <TouchableOpacity style={TrackStyles.container}>
+    <TouchableOpacity style={TrackStyles.container} onPress={() => play(index)}>
       <View className="flex flex-row gap-3 items-center">
         <Image
           source={track.artwork ? { uri: track.artwork } : LyricaLogo}

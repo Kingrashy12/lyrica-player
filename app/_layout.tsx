@@ -7,9 +7,13 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect } from "react";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import "expo-dev-client";
+import TrackPlayer from "react-native-track-player";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+TrackPlayer.registerPlaybackService(() => require("@/hooks/service"));
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -33,15 +37,15 @@ export default function RootLayout() {
     return null;
   }
 
-  useLogTrackPlayerState();
+  // useLogTrackPlayerState();
 
-  const handleTrackPlayerLoaded = useCallback(() => {
-    SplashScreen.hideAsync();
-  }, []);
+  // const handleTrackPlayerLoaded = useCallback(() => {
+  //   SplashScreen.hideAsync();
+  // }, []);
 
-  useSetupTrackPlayer({
-    onLoad: handleTrackPlayerLoaded,
-  });
+  // useSetupTrackPlayer({
+  //   onLoad: handleTrackPlayerLoaded,
+  // });
 
   return (
     <SafeAreaView className="bg-black flex-1 w-full h-full">
