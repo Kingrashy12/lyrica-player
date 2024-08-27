@@ -19,6 +19,7 @@ module.exports = {
         trans70: "#000000BF",
         trans90: "#000000E6",
         slider: "#52D7BF",
+        nextIcon: "rgb(150,150,150,.15)",
       },
       colors: {
         textColor: "#BCBCBC",

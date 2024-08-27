@@ -8,6 +8,7 @@ import {} from "react-native";
 import { fontSize } from "@/constants/system";
 import { defaultStyles } from "@/styles";
 import FloatingPlayer from "@/components/FloatingPlayer";
+import { TabIconType } from "@/types/types";
 
 const TabIcon = ({ icon, isfocused, color, size, name }: TabIconType) => (
   <View className="flex flex-col items-center relative z-10">
@@ -43,10 +44,11 @@ export default function TabLayout() {
             borderTopRightRadius: 20,
             borderTopWidth: 0,
             height: 60,
+            zIndex: 50,
           },
           tabBarBackground: () => (
             <BlurView
-              intensity={55}
+              intensity={100}
               tint="dark"
               style={{
                 ...StyleSheet.absoluteFillObject,

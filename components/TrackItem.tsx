@@ -1,7 +1,7 @@
 import { LyricaLogo } from "@/assets";
 import { colors, fontSize } from "@/constants/system";
 import { defaultStyles } from "@/styles";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import {
   Image,
@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Track } from "react-native-track-player";
+import { Track, useActiveTrack, useIsPlaying } from "react-native-track-player";
+import LoaderKit from "react-native-loader-kit";
 
 type TrackItemProps = {
   track: Track;
@@ -20,7 +21,8 @@ type TrackItemProps = {
 };
 
 const TrackItem = ({ track, play, index }: TrackItemProps) => {
-  const isActiveTrack = false;
+  const isActiveTrack = useActiveTrack()?.url === track.url;
+  const { playing } = useIsPlaying();
   const truncateTitle =
     track.title && track?.title.length > 22
       ? track?.title.slice(0, 22) + "..."
@@ -28,15 +30,32 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
   return (
     <TouchableOpacity style={TrackStyles.container} onPress={() => play(index)}>
       <View className="flex flex-row gap-3 items-center">
-        <Image
-          source={track.artwork ? { uri: track.artwork } : LyricaLogo}
-          style={{
-            ...TrackStyles.trackArtworkImage,
-            opacity: isActiveTrack ? 0.6 : 1,
-            borderWidth: !track.artwork ? 1 : 0,
-            borderColor: !track.artwork ? "white" : "black",
-          }}
-        />
+        <View>
+          <Image
+            source={track.artwork ? { uri: track.artwork } : LyricaLogo}
+            style={{
+              ...TrackStyles.trackArtworkImage,
+              opacity: isActiveTrack ? 0.6 : 1,
+              borderWidth: !track.artwork ? 1 : 0,
+              borderColor: !track.artwork ? "white" : "black",
+            }}
+          />
+          {/* {isActiveTrack &&
+            (playing ? (
+              <LoaderKit
+                style={TrackStyles.trackPlayingIndicator}
+                name="LineScalePulseOut"
+                color="blue"
+              />
+            ) : (
+              <FontAwesome6
+                style={TrackStyles.trackPausedIndicator}
+                name="play"
+                size={40}
+                color="blue"
+              />
+            ))} */}
+        </View>
         <View style={{ width: "auto" }}>
           <Text
             numberOfLines={1}
@@ -45,10 +64,10 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
               color: isActiveTrack ? colors.primary : colors.text,
             }}
           >
-            {truncateTitle || "Unkown audio"}
+            {truncateTitle || "Unknown audio"}
           </Text>
           <Text style={TrackStyles.tractArtistText}>
-            {track.artist || "Unkown artist"}
+            {track.artist || "Unknown artist"}
           </Text>
         </View>
       </View>
@@ -91,5 +110,19 @@ const TrackStyles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 14,
     marginTop: 4,
+  },
+  trackPlayingIndicator: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    left: 20,
+    top: 17,
+  },
+  trackPausedIndicator: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    left: 30,
+    top: 25,
   },
 });

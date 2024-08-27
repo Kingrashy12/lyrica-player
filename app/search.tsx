@@ -1,6 +1,6 @@
-import { tracks } from "@/assets/data/tracks";
 import SearchInput from "@/components/form/SearchInput";
 import SearchedTrack from "@/components/search/SearchedTrack";
+import { usePlayer } from "@/context/usePlayer";
 import { defaultStyles } from "@/styles";
 import React, { useState } from "react";
 import {
@@ -14,11 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const search = () => {
   const [query, setQuery] = useState("");
+  const { tracks } = usePlayer();
 
   const filteredTrack = tracks.filter((track) => {
-    const title = track.title.toLowerCase();
+    const title = track.title && track.title.toLowerCase();
     const queried = query.toLowerCase();
-    return query && title.includes(queried);
+    return query && title?.includes(queried);
   });
   return (
     <SafeAreaView
@@ -32,7 +33,7 @@ const search = () => {
         <SearchInput query={query} setQuery={setQuery} />
       </TouchableWithoutFeedback>
       <ScrollView>
-        <SearchedTrack tracks={filteredTrack} />
+        <SearchedTrack query={query} tracks={filteredTrack} />
       </ScrollView>
     </SafeAreaView>
   );

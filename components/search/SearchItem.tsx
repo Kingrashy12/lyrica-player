@@ -11,16 +11,22 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Track } from "react-native-track-player";
+import TrackPlayer, { Track, useActiveTrack } from "react-native-track-player";
 
-const SearchItem = ({ track }: { track: Track }) => {
-  const isActiveTrack = false;
+type TrackItemProps = {
+  track: Track;
+  play: (index: number) => void;
+  index: number;
+};
+
+const SearchItem = ({ track, index, play }: TrackItemProps) => {
+  const isActiveTrack = useActiveTrack()?.url === track.url;
   const truncateTitle =
     track.title && track.title.length > 22
       ? track.title.slice(0, 22) + "..."
       : track.title;
   return (
-    <TouchableOpacity style={TrackStyles.container}>
+    <TouchableOpacity style={TrackStyles.container} onPress={() => play(index)}>
       <View className="flex flex-row gap-3 items-center">
         <Image
           source={track.artwork ? { uri: track.artwork } : LyricaLogo}
@@ -39,10 +45,10 @@ const SearchItem = ({ track }: { track: Track }) => {
               color: isActiveTrack ? colors.primary : colors.text,
             }}
           >
-            {truncateTitle || "Unkown audio"}
+            {truncateTitle || "Unknown audio"}
           </Text>
           <Text style={TrackStyles.tractArtistText}>
-            {track.artist || "Unkown artist"}
+            {track.artist || "Unknown artist"}
           </Text>
         </View>
       </View>

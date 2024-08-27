@@ -1,3 +1,5 @@
+import { Track } from "react-native-track-player";
+
 declare type HeaderType = {
   label: string;
   rightIcon: React.ReactElement;
@@ -19,6 +21,10 @@ declare type SongType = {
   albumId?: string;
   modificationTime: number;
   uri: string;
+  width: number;
+  height: number;
+  creationTime: number;
+  mediaType: any;
 };
 
 declare type AudioMetadataType = {
@@ -40,4 +46,22 @@ declare type TrackData = {
 
 declare type TrackType = {
   track: TrackData;
+};
+
+declare type ScreenHeaderType = {
+  hasIconOnRight?: boolean;
+  rightIcon?: React.ReactElement;
+  headerTitlte: string;
+  className?: string;
+};
+
+declare type ContextProviderType = {
+  children: React.ReactNode;
+};
+
+declare type PlayerContextType = {
+  tracks: Track[];
+  isLoading: boolean;
+  permissionResponse: boolean | null;
+  trackIndex: number;
 };
