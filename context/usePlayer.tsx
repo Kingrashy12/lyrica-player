@@ -7,8 +7,12 @@ import {
   useState,
 } from "react";
 import * as MediaLibrary from "expo-media-library";
-import TrackPlayer, { Capability, Track } from "react-native-track-player";
-import { LyricaLogo, NextIcon, PrevIcon } from "@/assets";
+import TrackPlayer, {
+  Capability,
+  State,
+  Track,
+  useActiveTrack,
+} from "react-native-track-player";
 import { getAudioMetadata } from "@missingcore/audio-metadata";
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -22,9 +26,45 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
   const [isLoading, setIsLoading] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [trackIndex, setTrackIndex] = useState<number>(0);
+  const activeTrack = useActiveTrack();
   const [permissionResponse, setPermissionResponse] = useState<boolean | null>(
     null
   );
+
+  const updateTrackArtist = async () => {
+    try {
+      // Get the current track index
+      const currentTrackIndex = await TrackPlayer.getActiveTrackIndex();
+
+      if (currentTrackIndex !== null) {
+        // Get the current track details
+        const currentTrack = await TrackPlayer.getTrack(currentTrackIndex || 0);
+
+        if (currentTrack) {
+          if (!currentTrack.artist || currentTrack.artist === "") {
+            await TrackPlayer.updateMetadataForTrack(currentTrackIndex || 0, {
+              ...currentTrack,
+              artist: "Unknown artist",
+            });
+          }
+          if (!currentTrack.title || currentTrack.title === "") {
+            await TrackPlayer.updateMetadataForTrack(currentTrackIndex || 0, {
+              ...currentTrack,
+              title: "Unknown audio",
+            });
+          }
+        }
+      } else {
+        console.log("No track is currently playing.");
+      }
+    } catch (error) {
+      console.error("Error updating track artist:", error);
+    }
+  };
+
+  useEffect(() => {
+    updateTrackArtist();
+  }, [activeTrack]);
 
   // Setup audio permission
   const getMusics = useCallback(async () => {
@@ -61,13 +101,11 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
               metadata.metadata;
 
             const track: Track = {
-              id: asset.id, // Ensure every track has a unique id
               title: name,
               artist: artist,
               artwork: artwork,
               album: album,
               albumArtist: albumArtist,
-              duration: asset.duration,
               url: fileUri,
             };
 
@@ -94,32 +132,26 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
     getMusics();
   }, [getMusics]);
 
-  useEffect(() => {
-    if (permissionResponse === true) {
-      const setupPlayer = async () => {
-        try {
-          await TrackPlayer.setupPlayer();
-          await TrackPlayer.updateOptions({
-            capabilities: [
-              Capability.Play,
-              Capability.Pause,
-              Capability.SkipToNext,
-              Capability.SkipToPrevious,
-            ],
-            icon: LyricaLogo,
-            nextIcon: NextIcon,
-            previousIcon: PrevIcon,
-          });
-          await TrackPlayer.add(tracks);
-          await getTrackData();
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      setupPlayer();
+  const setupPlayer = async () => {
+    try {
+      if (State.None) {
+        await TrackPlayer.setupPlayer();
+      }
+      await TrackPlayer.updateOptions({
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+        ],
+      });
+      await TrackPlayer.add(tracks);
+      await getTrackData();
+      // await TrackPlayer.play();
+    } catch (error) {
+      console.log(error);
     }
-  }, [tracks, permissionResponse]);
+  };
 
   const getTrackData = async () => {
     try {
@@ -133,6 +165,12 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
       console.error("Error retrieving track data:", error);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && tracks.length >= 1) {
+      setupPlayer();
+    }
+  }, [tracks, isLoading]);
 
   return (
     <PlayerContext.Provider

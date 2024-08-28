@@ -13,19 +13,33 @@ type SearchedType = {
 
 const SearchedTrack = ({ tracks, query }: SearchedType) => {
   const { permissionResponse, isLoading } = usePlayer();
+  const { tracks: musics } = usePlayer();
 
-  const playTrack = async (index: number) => {
+  const playTrack = async (index: number, queried: Track) => {
     try {
-      await TrackPlayer.skip(index);
-      await TrackPlayer.play();
-      await TrackPlayer.setVolume(1);
+      // Get the current queue
+      const queue = await TrackPlayer.getQueue();
+
+      // Find the correct index for the queried track
+      const correctIndex = queue.findIndex(
+        (track) => track.url === queried.url
+      );
+
+      // Skip to the correct track
+      if (correctIndex !== -1) {
+        await TrackPlayer.skip(correctIndex);
+        await TrackPlayer.play();
+        await TrackPlayer.setVolume(1);
+      } else {
+        console.error("Track not found in queue:", queried);
+      }
     } catch (error) {
       console.error("Error playing track:", error);
     }
   };
 
-  const handlePlay = (index: number) => {
-    playTrack(index);
+  const handlePlay = (index: number, track: Track) => {
+    playTrack(index, track);
   };
 
   if (permissionResponse === null) {
@@ -61,7 +75,13 @@ const SearchedTrack = ({ tracks, query }: SearchedType) => {
             gap: 10,
           }}
           ListEmptyComponent={() => (
-            <View className="w-full items-center justify-center h-full flex-1">
+            <View
+              className={
+                query
+                  ? "w-full items-center justify-center h-full flex-1"
+                  : "hidden"
+              }
+            >
               <Text className="text-neutral-500 font-poppins-semi-bold text-base">
                 No music found
               </Text>

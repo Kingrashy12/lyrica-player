@@ -19,6 +19,11 @@ export const formatSecondsToMinutes = (seconds: number) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
-// export const generateTracksListId = (trackListName: string, search?: string) => {
-// 	return `${trackListName}${`-${search}` || ''}`
-// }
+export function generateId() {
+  const numbers = "1234567890";
+  let id = "";
+  for (let i = 0; i < 16; i++) {
+    id = id + numbers.charAt(Math.floor(Math.random() * numbers.length));
+  }
+  return id;
+}

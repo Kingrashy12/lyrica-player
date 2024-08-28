@@ -23,7 +23,7 @@ const ActionButtons = () => {
   const activeTrack = useActiveTrack();
   const [trackIndex, setTrackIndex] = useState(0);
   const [disablePrev, setDisablePrev] = useState(false);
-  const [mode, setMode] = useState<number>();
+  const [mode, setMode] = useState<number>(RepeatMode.Queue);
   const [icon, setIcon] = useState<IconName>("repeat");
   const { tracks } = usePlayer();
 
@@ -34,16 +34,15 @@ const ActionButtons = () => {
 
   useEffect(() => {
     getRepeatMode().then((mode) => handleMode(mode));
-  }, [mode]);
-
-  useEffect(() => {
-    getRepeatMode().then((mode) => handleMode(mode));
     if (mode === 0) {
       setIcon("repeat-off");
+      setRepeatMode(RepeatMode.Track);
     } else if (mode === 1) {
       setIcon("repeat-once");
+      setRepeatMode(RepeatMode.Queue);
     } else if (mode === 2) {
       setIcon("repeat");
+      setRepeatMode(RepeatMode.Off);
     }
   }, []);
 

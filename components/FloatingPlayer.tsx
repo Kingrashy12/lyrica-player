@@ -15,9 +15,13 @@ const FloatingPlayer = () => {
   const { playing } = useIsPlaying();
 
   const truncateTitle =
-    track?.title && track.title.length > 18
-      ? track.title.slice(0, 18) + "..."
+    track?.title && track.title.length > 20
+      ? track.title.slice(0, 20) + "..."
       : track?.title;
+  const truncateArtist =
+    track?.artist && track.artist.length > 25
+      ? track.artist.slice(0, 25) + "..."
+      : track?.artist;
 
   if (!track?.url) {
     return null;
@@ -59,10 +63,10 @@ const FloatingPlayer = () => {
           />
           <View>
             <Text className="font-poppins-semi-bold text-white text-base">
-              {truncateTitle}
+              {truncateTitle || "Unknown audio"}
             </Text>
             <Text style={{ color: colors.textMuted }}>
-              {track.artist || "Unkown artist"}
+              {truncateArtist || "Unknown artist"}
             </Text>
           </View>
         </View>

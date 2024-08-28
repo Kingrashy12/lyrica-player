@@ -52,7 +52,7 @@ const TrackLists = () => {
             paddingBottom: 120,
             paddingTop: 140,
             paddingHorizontal: 10,
-            gap: 10,
+            gap: 1,
           }}
           ListEmptyComponent={() => (
             <View className="w-full items-center justify-center h-full flex-1">

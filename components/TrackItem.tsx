@@ -27,6 +27,10 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
     track.title && track?.title.length > 22
       ? track?.title.slice(0, 22) + "..."
       : track.title;
+  const truncateArtist =
+    track?.artist && track.artist.length > 25
+      ? track.artist.slice(0, 25) + "..."
+      : track?.artist;
   return (
     <TouchableOpacity style={TrackStyles.container} onPress={() => play(index)}>
       <View className="flex flex-row gap-3 items-center">
@@ -40,7 +44,7 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
               borderColor: !track.artwork ? "white" : "black",
             }}
           />
-          {/* {isActiveTrack &&
+          {isActiveTrack &&
             (playing ? (
               <LoaderKit
                 style={TrackStyles.trackPlayingIndicator}
@@ -54,7 +58,7 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
                 size={40}
                 color="blue"
               />
-            ))} */}
+            ))}
         </View>
         <View style={{ width: "auto" }}>
           <Text
@@ -67,14 +71,14 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
             {truncateTitle || "Unknown audio"}
           </Text>
           <Text style={TrackStyles.tractArtistText}>
-            {track.artist || "Unknown artist"}
+            {truncateArtist || "Unknown artist"}
           </Text>
         </View>
       </View>
 
       <TouchableOpacity>
         <Entypo
-          name="dots-three-vertical"
+          name="dots-three-horizontal"
           size={24}
           color="white"
           className="z-10 relative"
@@ -96,9 +100,9 @@ const TrackStyles = StyleSheet.create({
     display: "flex",
   },
   trackArtworkImage: {
-    borderRadius: 25,
-    width: 85,
-    height: 85,
+    borderRadius: 20,
+    width: 80,
+    height: 80,
   },
   trackTitleText: {
     ...defaultStyles.text,
@@ -115,14 +119,14 @@ const TrackStyles = StyleSheet.create({
     position: "absolute",
     width: 50,
     height: 50,
-    left: 20,
-    top: 17,
+    left: 18,
+    top: 15,
   },
   trackPausedIndicator: {
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    left: 30,
-    top: 25,
+    left: 29,
+    top: 20,
   },
 });
