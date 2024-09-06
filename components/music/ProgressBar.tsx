@@ -25,9 +25,7 @@ const ProgressBar = () => {
       />
       <View style={styles.progressLevelDuraiton}>
         <Text style={styles.progressLabelText}>{trackElapsedTime}</Text>
-        <Text style={styles.progressLabelText}>
-          {"-"} {trackRemainingTime}
-        </Text>
+        <Text style={styles.progressLabelText}>{trackRemainingTime}</Text>
       </View>
       <View className="w-full justify-between items-center">
         <TouchableOpacity></TouchableOpacity>

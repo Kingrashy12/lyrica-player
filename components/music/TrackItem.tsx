@@ -13,16 +13,20 @@ import {
 } from "react-native";
 import { Track, useActiveTrack, useIsPlaying } from "react-native-track-player";
 import LoaderKit from "react-native-loader-kit";
+import MusicMenu from "./MusicMenu";
+import { useMusicMenu } from "@/context/useMenu";
 
 type TrackItemProps = {
   track: Track;
-  play: (index: number) => void;
+  play: (index: number, queried?: Track) => void;
   index: number;
 };
 
 const TrackItem = ({ track, play, index }: TrackItemProps) => {
   const isActiveTrack = useActiveTrack()?.url === track.url;
   const { playing } = useIsPlaying();
+  const { onOpen } = useMusicMenu();
+
   const truncateTitle =
     track.title && track?.title.length > 22
       ? track?.title.slice(0, 22) + "..."
@@ -32,7 +36,10 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
       ? track.artist.slice(0, 25) + "..."
       : track?.artist;
   return (
-    <TouchableOpacity style={TrackStyles.container} onPress={() => play(index)}>
+    <TouchableOpacity
+      style={TrackStyles.container}
+      onPress={() => play(index, track)}
+    >
       <View className="flex flex-row gap-3 items-center">
         <View>
           <Image
@@ -40,8 +47,6 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
             style={{
               ...TrackStyles.trackArtworkImage,
               opacity: isActiveTrack ? 0.6 : 1,
-              borderWidth: !track.artwork ? 1 : 0,
-              borderColor: !track.artwork ? "white" : "black",
             }}
           />
           {isActiveTrack &&
@@ -76,7 +81,12 @@ const TrackItem = ({ track, play, index }: TrackItemProps) => {
         </View>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={(e) => {
+          e.stopPropagation();
+          onOpen(track);
+        }}
+      >
         <Entypo
           name="dots-three-horizontal"
           size={24}
@@ -100,7 +110,7 @@ const TrackStyles = StyleSheet.create({
     display: "flex",
   },
   trackArtworkImage: {
-    borderRadius: 20,
+    borderRadius: 25,
     width: 80,
     height: 80,
   },

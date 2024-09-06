@@ -23,28 +23,26 @@ const ActionButtons = () => {
   const activeTrack = useActiveTrack();
   const [trackIndex, setTrackIndex] = useState(0);
   const [disablePrev, setDisablePrev] = useState(false);
-  const [mode, setMode] = useState<number>(RepeatMode.Queue);
-  const [icon, setIcon] = useState<IconName>("repeat");
+  const [mode, setMode] = useState<number>(RepeatMode.Off);
+  const [icon, setIcon] = useState<any>("repeat-off");
   const { tracks } = usePlayer();
 
   async function handleMode(mode: number) {
     setMode(mode);
-    setRepeatMode(mode);
+    await TrackPlayer.setRepeatMode(mode);
   }
 
   useEffect(() => {
-    getRepeatMode().then((mode) => handleMode(mode));
-    if (mode === 0) {
+    TrackPlayer.getRepeatMode().then((currentMode) => handleMode(currentMode));
+
+    if (mode === RepeatMode.Off) {
       setIcon("repeat-off");
-      setRepeatMode(RepeatMode.Track);
-    } else if (mode === 1) {
+    } else if (mode === RepeatMode.Track) {
       setIcon("repeat-once");
-      setRepeatMode(RepeatMode.Queue);
-    } else if (mode === 2) {
+    } else if (mode === RepeatMode.Queue) {
       setIcon("repeat");
-      setRepeatMode(RepeatMode.Off);
     }
-  }, []);
+  }, [mode]);
 
   const getTrackData = async () => {
     try {
@@ -90,23 +88,31 @@ const ActionButtons = () => {
   }, [trackIndex]);
 
   async function repeat() {
-    if (mode === 0) {
-      setMode(RepeatMode.Track);
-      setRepeatMode(mode);
-      setIcon("repeat-once");
-      ToastAndroid.show("Repeat current track", 3000);
-    } else if (mode === 1) {
-      setMode(RepeatMode.Queue);
-      setRepeatMode(mode);
-      setIcon("repeat");
-      ToastAndroid.show("Repeat tracks", 3000);
-    } else if (mode === 2) {
-      setMode(RepeatMode.Off);
-      setRepeatMode(mode);
-      setIcon("repeat-off");
-      ToastAndroid.show("Repeat off", 3000);
+    try {
+      if (mode === RepeatMode.Off) {
+        setMode(RepeatMode.Track);
+        setIcon("repeat-once");
+        await TrackPlayer.setRepeatMode(RepeatMode.Track);
+        ToastAndroid.show("Repeat current track", ToastAndroid.SHORT);
+      } else if (mode === RepeatMode.Track) {
+        setMode(RepeatMode.Queue);
+        setIcon("repeat");
+        await TrackPlayer.setRepeatMode(RepeatMode.Queue);
+        ToastAndroid.show("Repeat tracks", ToastAndroid.SHORT);
+      } else if (mode === RepeatMode.Queue) {
+        setMode(RepeatMode.Off);
+        setIcon("repeat-off");
+        await TrackPlayer.setRepeatMode(RepeatMode.Off);
+        ToastAndroid.show("Repeat off", ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error("Error setting repeat mode:", error);
     }
   }
+
+  // async function shuffle() {
+
+  // }
 
   return (
     <View className="flex items-center flex-row w-full absolute bottom-20 bg-black justify-between z-50">

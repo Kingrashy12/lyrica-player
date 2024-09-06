@@ -1,3 +1,4 @@
+import { TextInputProps, ViewStyle } from "react-native";
 import { Track } from "react-native-track-player";
 
 declare type HeaderType = {
@@ -64,4 +65,70 @@ declare type PlayerContextType = {
   isLoading: boolean;
   permissionResponse: boolean | null;
   trackIndex: number;
+  refresh: () => void;
+};
+
+declare type MenuListContextType = {
+  isOpen: boolean;
+  onOpen: (track: Track) => void;
+  onClose: () => void;
+  track?: Track;
+};
+
+declare type FavouriteContextType = {
+  favourites: Track[];
+  addTofavourite: (track?: Track) => void;
+  removeFrom: (track?: Track) => void;
+  refresh: () => void;
+  isRefreshing: boolean;
+  clearTracks: () => void;
+};
+
+declare type ConfirmDeleteType = {
+  header: string;
+  label: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+};
+
+declare type ButtonTypes = {
+  children: string;
+  variant?: "primary" | "danger" | "ghost";
+  className?: string;
+  onPress?: () => void;
+  style?: ViewStyle;
+};
+
+declare type PlayListType = {
+  id: string;
+  tracks: Track[];
+  name: string;
+  createdAt: Date;
+};
+
+declare type PlayListContextType = {
+  playlists: PlayListType[];
+  addToPlayList: (track: Track, playId: string) => void;
+  removeFromPlaylist: (track: Track, playId: string) => void;
+  refreshList: () => void;
+  isRefreshing: boolean;
+  createPlayList: (name: string) => void;
+  clearList: () => void;
+};
+
+declare type PlayListModalType = {
+  isOpen: boolean;
+  onOpen: (track?: Track) => void;
+  onClose: () => void;
+  track?: Track;
+};
+
+declare type NewPlayListModalType = {
+  isOpen: boolean;
+  onOpen: (track?: Track) => void;
+  onClose: () => void;
+  name: string;
+  track?: Track;
+  onTextChange: (val: string) => void;
+  resetName: () => void;
 };

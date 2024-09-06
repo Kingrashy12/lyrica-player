@@ -43,8 +43,6 @@ const SearchItem = ({ track, index, play }: TrackItemProps) => {
             style={{
               ...TrackStyles.trackArtworkImage,
               opacity: isActiveTrack ? 0.6 : 1,
-              borderWidth: !track.artwork ? 1 : 0,
-              borderColor: !track.artwork ? "white" : "black",
             }}
           />
 

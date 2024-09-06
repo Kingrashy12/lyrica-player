@@ -8,11 +8,12 @@ const ScreenHeader = ({
   headerTitlte,
   hasIconOnRight,
   rightIcon,
+  className,
 }: ScreenHeaderType) => {
   return (
     <View
       style={{ gap: hasIconOnRight ? 1 : 80 }}
-      className={`flex flex-row items-center ${
+      className={`flex flex-row items-center ${className} ${
         hasIconOnRight && "justify-between"
       }`}
     >

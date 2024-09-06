@@ -43,14 +43,14 @@ const TrackLists = () => {
           <LoaderKit
             name="BallSpinFadeLoader"
             color="blue"
-            style={{ width: 50, height: 50, position: "absolute", top: 280 }}
+            style={{ width: 50, height: 50, position: "absolute", top: 150 }}
           />
         </View>
       ) : (
         <FlatList
           contentContainerStyle={{
             paddingBottom: 120,
-            paddingTop: 140,
+            // paddingTop: 140,
             paddingHorizontal: 10,
             gap: 1,
           }}

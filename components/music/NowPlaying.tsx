@@ -14,10 +14,6 @@ const NowPlaying = () => {
   return (
     <View className="w-full flex flex-col h-full relative">
       <Image
-        style={{
-          borderWidth: artwork ? 0 : 1,
-          borderColor: artwork ? "" : "white",
-        }}
         source={artwork ? { uri: artwork } : LyricaLogo}
         className="rounded-[25px] w-[320px] h-[320px]"
       />

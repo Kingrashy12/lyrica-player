@@ -8,6 +8,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import "expo-dev-client";
 import TrackPlayer from "react-native-track-player";
 import { PlayerProvider } from "@/context/usePlayer";
+import { MenuListProvider } from "@/context/useMenu";
+import { FavouriteTrackProvider } from "@/context/useFavourite";
+import { PlaylistProvider } from "@/context/usePlaylist";
+import { PlayListModalProvider } from "@/context/usePlaylistModal";
+import { NewPlaylistModalProvider } from "@/context/useNewPlaylistModal";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,15 +43,38 @@ export default function RootLayout() {
 
   return (
     <PlayerProvider>
-      <SafeAreaView className="bg-black flex-1 w-full h-full">
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="search" options={{ headerShown: false }} />
-          <Stack.Screen name="playing" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" backgroundColor="black" />
-      </SafeAreaView>
+      <PlaylistProvider>
+        <NewPlaylistModalProvider>
+          <PlayListModalProvider>
+            <FavouriteTrackProvider>
+              <MenuListProvider>
+                <SafeAreaView className="bg-black flex-1 w-full h-full">
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="search"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="[currentplayId]"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="playing"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                  <StatusBar style="auto" backgroundColor="black" />
+                </SafeAreaView>
+              </MenuListProvider>
+            </FavouriteTrackProvider>
+          </PlayListModalProvider>
+        </NewPlaylistModalProvider>
+      </PlaylistProvider>
     </PlayerProvider>
   );
 }

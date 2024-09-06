@@ -9,11 +9,11 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import TrackPlayer, {
   Capability,
-  State,
   Track,
   useActiveTrack,
 } from "react-native-track-player";
 import { getAudioMetadata } from "@missingcore/audio-metadata";
+import * as SecureStorage from "expo-secure-store";
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
@@ -30,6 +30,58 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
   const [permissionResponse, setPermissionResponse] = useState<boolean | null>(
     null
   );
+
+  async function saveActiveTrack() {
+    try {
+      const ACTIVE_TRACK_KEY = "activeTrack";
+      const currentTrackId = await TrackPlayer.getActiveTrackIndex();
+      if (currentTrackId) {
+        const currentTrack = await TrackPlayer.getTrack(currentTrackId);
+        const savedTrack = await SecureStorage.getItemAsync(ACTIVE_TRACK_KEY);
+        const savedTrack_ = savedTrack ? JSON.parse(savedTrack) : null;
+        const notInState = currentTrack?.url !== savedTrack_?.url;
+        if (currentTrack && notInState) {
+          await SecureStorage.setItemAsync(
+            ACTIVE_TRACK_KEY,
+            JSON.stringify(currentTrack)
+          );
+        } else if (!notInState) {
+          console.log("Track has been saved already");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving active track:", error);
+    }
+  }
+
+  useEffect(() => {
+    saveActiveTrack();
+  }, [activeTrack?.url]);
+
+  async function loadActiveTrack() {
+    try {
+      const ACTIVE_TRACK_KEY = "activeTrack";
+      const savedtrack = await SecureStorage.getItemAsync(ACTIVE_TRACK_KEY);
+      const savedTrack = savedtrack ? JSON.parse(savedtrack) : null;
+      if (savedTrack) {
+        const queue = await TrackPlayer.getQueue();
+        const trackIndex = queue.findIndex(
+          (track) => track.url === savedTrack.url
+        );
+
+        if (trackIndex !== -1) {
+          await TrackPlayer.skip(trackIndex); // Skip to the saved track index
+        }
+      }
+    } catch (error) {
+      console.error("Error loading active track:", error);
+    }
+  }
+
+  // Call this function when the app starts
+  useEffect(() => {
+    loadActiveTrack();
+  }, []);
 
   const updateTrackArtist = async () => {
     try {
@@ -134,9 +186,9 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
 
   const setupPlayer = async () => {
     try {
-      if (State.None) {
-        await TrackPlayer.setupPlayer();
-      }
+      // if (State.None) {
+      await TrackPlayer.setupPlayer();
+      // }
       await TrackPlayer.updateOptions({
         capabilities: [
           Capability.Play,
@@ -146,6 +198,7 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
         ],
       });
       await TrackPlayer.add(tracks);
+      await loadActiveTrack();
       await getTrackData();
       // await TrackPlayer.play();
     } catch (error) {
@@ -172,9 +225,13 @@ export const PlayerProvider = ({ children }: ContextProviderType) => {
     }
   }, [tracks, isLoading]);
 
+  function refresh() {
+    getMusics();
+  }
+
   return (
     <PlayerContext.Provider
-      value={{ isLoading, trackIndex, tracks, permissionResponse }}
+      value={{ isLoading, trackIndex, tracks, permissionResponse, refresh }}
     >
       {children}
     </PlayerContext.Provider>

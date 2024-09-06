@@ -29,7 +29,7 @@ const TabIcon = ({ icon, isfocused, color, size, name }: TabIconType) => (
 export default function TabLayout() {
   return (
     <>
-      <Tabs
+      {/* <Tabs
         screenOptions={{
           tabBarActiveTintColor: "blue",
           tabBarShowLabel: false,
@@ -105,8 +105,17 @@ export default function TabLayout() {
             ),
           }}
         />
-      </Tabs>
-
+      </Tabs> */}
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backfaceVisibility: "hidden",
+            backgroundColor: "black",
+            display: "none",
+          },
+        }}
+      ></Tabs>
       <FloatingPlayer />
     </>
   );

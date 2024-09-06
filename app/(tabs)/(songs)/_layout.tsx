@@ -14,6 +14,10 @@ const SongsLayout = () => {
           options={{
             headerTitle: "Songs",
             headerShown: false,
+            headerSearchBarOptions: {
+              shouldShowHintSearchIcon: true,
+              placeholder: "Search music",
+            },
           }}
         />
       </Stack>

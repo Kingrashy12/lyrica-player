@@ -1,4 +1,4 @@
-import NowPlaying from "@/components/NowPlaying";
+import NowPlaying from "@/components/music/NowPlaying";
 import ScreenHeader from "@/components/ScreenHeader";
 import { defaultStyles } from "@/styles";
 import { Fontisto } from "@expo/vector-icons";
