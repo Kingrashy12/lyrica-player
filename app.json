@@ -2,7 +2,7 @@
   "expo": {
     "name": "Lyrica Player",
     "slug": "lyrica-player",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/lyrica-logo.png",
     "scheme": "lyrica-player",
@@ -15,10 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "audio",
-          "fetch"
-        ]
+        "UIBackgroundModes": ["audio", "fetch"]
       }
     },
     "android": {
@@ -29,9 +26,7 @@
       },
       "notificationIcon": "./assets/images/lyrica-logo.png",
       "notificationChannel": "playback",
-      "permissions": [
-        "WAKE_LOCK"
-      ],
+      "permissions": ["WAKE_LOCK"],
       "package": "com.kingrashy.lyricaplayer"
     },
     "web": {
